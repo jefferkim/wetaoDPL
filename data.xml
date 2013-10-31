@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<auto>
+<title>微淘运营工具</title>
+<desc>微淘运营工具</desc>
+
+<layout>
+
+    <model>
+      <name>布局(无空距)</name>
+	    <id>1</id>
+      <content>
+         <![CDATA[
+		        <div class="row-fluid clearfix">
+                  <div class="span12 column"></div>
+            </div>
+          ]]>
+       </content>
+       <handle>
+          <![CDATA[
+            ['编辑','删除']
+          ]]>
+       </handle>
+    </model>
+
+    <model>
+      <name>布局(空距)</name>
+      <id>2</id>
+      <content>
+         <![CDATA[
+            <div class="row-fluid clearfix">
+                  <div class="span12 column"></div>
+            </div>
+          ]]>
+       </content>
+       <handle>
+          <![CDATA[
+            ['编辑','删除']
+          ]]>
+       </handle>
+    </model>
+
+</layout>
+
+<widget>
+
+    <model>
+      <name>banner图片(带链接)</name>
+      <id>1</id>
+      <content>
+         <![CDATA[
+            <div class="banner"><a href="#"><img src="http://gtms01.alicdn.com/tps/i1/T1GX1VFm8jXXc6WFH2-592-296.jpg"/></a></div>
+          ]]>
+       </content>
+       <handle>
+          <![CDATA[
+            ['编辑','删除']
+          ]]>
+       </handle>
+    </model>
+
+    <model>
+      <name>帐号列表</name>
+      <id>2</id>
+      <content>
+         <![CDATA[
+            <div class="banner"><a href="#"><img src="http://gtms01.alicdn.com/tps/i1/T1GX1VFm8jXXc6WFH2-592-296.jpg"/></a></div>
+          ]]>
+       </content>
+       <handle>
+          <![CDATA[
+            ['编辑','删除']
+          ]]>
+       </handle>
+    </model>
+
+</widget>
+
+</auto>

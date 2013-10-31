@@ -1,0 +1,34 @@
+<ul class="nav nav-list">
+          <li class="nav-header">
+              <i class="icon-plus icon-white"></i> 布局设置
+          </li>
+          <li class="nav-bd">
+            <!--无边框，适合直接通栏切图的-->
+            <div class="lyrow ui-draggable"><span class="drag label"><i class="icon-move"></i>拖动</span>
+              <div class="preview">
+                <input value="无边框" type="text">
+              </div>
+            </div>
+            <!--有边框-->
+            <div class="lyrow ui-draggable"><span class="drag label"><i class="icon-move"></i>拖动</span>
+              <div class="preview">
+                <input value="有边框" type="text">
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <!--微淘相关-->
+      <ul class="nav nav-list accordion-group">
+          <li class="nav-header"><i class="icon-plus icon-white"></i> 微淘专用
+          </li>
+          <li style="display: none;" class="boxes nav-bd" id="elmBase">
+
+              <div class="box box-element ui-draggable"> 
+                 <span class="drag label"><i class="icon-move"></i>拖动</span>
+                 <span class="configuration"><button type="button" class="btn btn-mini" data-target="#editorModal" role="button" data-toggle="modal">编辑</button></span>
+
+              <div class="preview">banner图片(带链接)</div>
+             
+          </li>
+        </ul>

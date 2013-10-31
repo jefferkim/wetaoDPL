@@ -1,8 +1,43 @@
+(function() {
+	var cache = {};
+
+	this.tmpl = function tmpl(str, data) {
+		// Figure out if we're getting a template, or if we need to
+		// load the template - and be sure to cache the result.
+		var fn = !/\W/.test(str) ?
+			cache[str] = cache[str] ||
+			tmpl(document.getElementById(str).innerHTML) :
+
+		// Generate a reusable function that will serve as a template
+		// generator (and which will be cached).
+		new Function("obj",
+			"var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+			// Introduce the data as local variables using with(){}
+			"with(obj){p.push('" +
+
+			// Convert the template into pure JavaScript
+			str
+			.replace(/[\r\t\n]/g, " ")
+			.split("<%").join("\t")
+			.replace(/((^|%>)[^\t]*)'/g, "$1\r")
+			.replace(/\t=(.*?)%>/g, "',$1,'")
+			.split("\t").join("');")
+			.split("%>").join("p.push('")
+			.split("\r").join("\\'") + "');}return p.join('');");
+
+		// Provide some basic currying to the user
+		return data ? fn(data) : fn;
+	};
+})();
+
+
+
 function supportstorage() {
-	if (typeof window.localStorage=='object') 
+	if (typeof window.localStorage == 'object')
 		return true;
 	else
-		return false;		
+		return false;
 }
 
 function handleSaveLayout() {
@@ -15,22 +50,25 @@ function handleSaveLayout() {
 	}
 }
 
-var layouthistory; 
-function saveLayout(){
+
+
+var layouthistory;
+
+function saveLayout() {
 	var data = layouthistory;
 	if (!data) {
-		data={};
+		data = {};
 		data.count = 0;
 		data.list = [];
 	}
-	if (data.list.length>data.count) {
-		for (i=data.count;i<data.list.length;i++)
-			data.list[i]=null;
+	if (data.list.length > data.count) {
+		for (i = data.count; i < data.list.length; i++)
+			data.list[i] = null;
 	}
 	data.list[data.count] = window.demoHtml;
 	data.count++;
 	if (supportstorage()) {
-		localStorage.setItem("layoutdata",JSON.stringify(data));
+		localStorage.setItem("layoutdata", JSON.stringify(data));
 	}
 	layouthistory = data;
 	//console.log(data);
@@ -44,22 +82,30 @@ function saveLayout(){
 	});*/
 }
 
-function downloadLayout(){
-	
-	$.ajax({  
-		type: "POST",  
-		url: "/build/downloadLayout",  
-		data: { layout: $('#download-layout').html() },  
-		success: function(data) { window.location.href = '/build/download'; }
+function downloadLayout() {
+
+	$.ajax({
+		type: "POST",
+		url: "/build/downloadLayout",
+		data: {
+			layout: $('#download-layout').html()
+		},
+		success: function(data) {
+			window.location.href = '/build/download';
+		}
 	});
 }
 
-function downloadHtmlLayout(){
-	$.ajax({  
-		type: "POST",  
-		url: "/build/downloadLayout",  
-		data: { layout: $('#download-layout').html() },  
-		success: function(data) { window.location.href = '/build/downloadHtml'; }
+function downloadHtmlLayout() {
+	$.ajax({
+		type: "POST",
+		url: "/build/downloadLayout",
+		data: {
+			layout: $('#download-layout').html()
+		},
+		success: function(data) {
+			window.location.href = '/build/downloadHtml';
+		}
 	});
 }
 
@@ -67,12 +113,12 @@ function undoLayout() {
 	var data = layouthistory;
 	//console.log(data);
 	if (data) {
-		if (data.count<2) return false;
-		window.demoHtml = data.list[data.count-2];
+		if (data.count < 2) return false;
+		window.demoHtml = data.list[data.count - 2];
 		data.count--;
 		$('.demo').html(window.demoHtml);
 		if (supportstorage()) {
-			localStorage.setItem("layoutdata",JSON.stringify(data));
+			localStorage.setItem("layoutdata", JSON.stringify(data));
 		}
 		return true;
 	}
@@ -95,7 +141,7 @@ function redoLayout() {
 			data.count++;
 			$('.demo').html(window.demoHtml);
 			if (supportstorage()) {
-				localStorage.setItem("layoutdata",JSON.stringify(data));
+				localStorage.setItem("layoutdata", JSON.stringify(data));
 			}
 			return true;
 		}
@@ -118,6 +164,7 @@ function handleJsIds() {
 	handleCarouselIds();
 	handleTabsIds()
 }
+
 function handleAccordionIds() {
 	var e = $(".demo #myAccordion");
 	var t = randomNumber();
@@ -135,6 +182,7 @@ function handleAccordionIds() {
 		})
 	})
 }
+
 function handleCarouselIds() {
 	var e = $(".demo #myCarousel");
 	var t = randomNumber();
@@ -146,6 +194,7 @@ function handleCarouselIds() {
 	e.find(".left").attr("href", "#" + n);
 	e.find(".right").attr("href", "#" + n)
 }
+
 function handleModalIds() {
 	var e = $(".demo #myModalLink");
 	var t = randomNumber();
@@ -155,6 +204,7 @@ function handleModalIds() {
 	e.attr("href", "#" + n);
 	e.next().attr("id", n)
 }
+
 function handleTabsIds() {
 	var e = $(".demo #myTabs");
 	var t = randomNumber();
@@ -167,12 +217,15 @@ function handleTabsIds() {
 		$(t).parent().parent().find("a[href=#" + n + "]").attr("href", "#" + r)
 	})
 }
+
 function randomNumber() {
 	return randomFromInterval(1, 1e6)
 }
+
 function randomFromInterval(e, t) {
 	return Math.floor(Math.random() * (t - e + 1) + e)
 }
+
 function gridSystemGenerator() {
 	$(".lyrow .preview input").bind("keyup", function() {
 		var e = 0;
@@ -190,6 +243,7 @@ function gridSystemGenerator() {
 		}
 	})
 }
+
 function configurationElm(e, t) {
 	$(".demo").delegate(".configuration > a", "click", function(e) {
 		e.preventDefault();
@@ -212,6 +266,7 @@ function configurationElm(e, t) {
 		n.addClass($(this).attr("rel"))
 	})
 }
+
 function removeElm() {
 	$(".demo").delegate(".remove", "click", function(e) {
 		e.preventDefault();
@@ -221,21 +276,26 @@ function removeElm() {
 		}
 	})
 }
+
 function clearDemo() {
 	$(".demo").empty();
 	layouthistory = null;
 	if (supportstorage())
 		localStorage.removeItem("layoutdata");
 }
+
 function removeMenuClasses() {
 	$("#menu-layoutit li button").removeClass("active")
 }
+
 function changeStructure(e, t) {
 	$("#download-layout ." + e).removeClass(e).addClass(t)
 }
+
 function cleanHtml(e) {
 	$(e).parent().append($(e).children().html())
 }
+
 function downloadLayoutSrc() {
 	var e = "";
 	$("#download-layout").children().html($(".demo").html());
@@ -299,26 +359,26 @@ $(window).resize(function() {
 	$(".demo").css("min-height", $(window).height() - 160)
 });
 
-function restoreData(){
+function restoreData() {
 	if (supportstorage()) {
 		layouthistory = JSON.parse(localStorage.getItem("layoutdata"));
 		if (!layouthistory) return false;
-		window.demoHtml = layouthistory.list[layouthistory.count-1];
+		window.demoHtml = layouthistory.list[layouthistory.count - 1];
 		if (window.demoHtml) $(".demo").html(window.demoHtml);
 	}
 }
 
-function initContainer(){
+function initContainer() {
 	$(".demo, .demo .column").sortable({
 		connectWith: ".column",
 		opacity: .35,
 		handle: ".drag",
-		start: function(e,t) {
+		start: function(e, t) {
 			if (!startdrag) stopsave++;
 			startdrag = 1;
 		},
-		stop: function(e,t) {
-			if(stopsave>0) stopsave--;
+		stop: function(e, t) {
+			if (stopsave > 0) stopsave--;
 			startdrag = 0;
 		}
 	});
@@ -327,7 +387,7 @@ function initContainer(){
 $(document).ready(function() {
 	CKEDITOR.disableAutoInline = true;
 	restoreData();
-	var contenthandle = CKEDITOR.replace( 'contenteditor' ,{
+	var contenthandle = CKEDITOR.replace('contenteditor', {
 		language: 'zh-cn',
 		contentsCss: ['css/bootstrap-combined.min.css'],
 		allowedContent: true
@@ -338,35 +398,44 @@ $(document).ready(function() {
 		connectToSortable: ".demo",
 		helper: "clone",
 		handle: ".drag",
-		start: function(e,t) {
+		start: function(e, t) {
+			console.log(e.currentTarget);
 			if (!startdrag) stopsave++;
 			startdrag = 1;
 		},
 		drag: function(e, t) {
 			t.helper.width(400)
 		},
-		stop: function(e, t) {
+		stop: function(e, t) { //拖动完成
+
+			//排序
 			$(".demo .column").sortable({
 				opacity: .35,
 				connectWith: ".column",
-				start: function(e,t) {
+				start: function(e, t) {
 					if (!startdrag) stopsave++;
 					startdrag = 1;
 				},
-				stop: function(e,t) {
-					if(stopsave>0) stopsave--;
+				stop: function(e, t) {
+					if (stopsave > 0) stopsave--;
 					startdrag = 0;
 				}
 			});
-			if(stopsave>0) stopsave--;
+			if (stopsave > 0) stopsave--;
 			startdrag = 0;
+
+
+			//把数据填充过来
+
+
+
 		}
 	});
 	$(".sidebar-nav .box").draggable({
 		connectToSortable: ".column",
 		helper: "clone",
 		handle: ".drag",
-		start: function(e,t) {
+		start: function(e, t) {
 			if (!startdrag) stopsave++;
 			startdrag = 1;
 		},
@@ -375,12 +444,12 @@ $(document).ready(function() {
 		},
 		stop: function() {
 			handleJsIds();
-			if(stopsave>0) stopsave--;
+			if (stopsave > 0) stopsave--;
 			startdrag = 0;
 		}
 	});
 	initContainer();
-	$('body.edit .demo').on("click","[data-target=#editorModal]",function(e) {
+	$('body.edit .demo').on("click", "[data-target=#editorModal]", function(e) {
 		e.preventDefault();
 		currenteditor = $(this).parent().parent().find('.view');
 		var eText = currenteditor.html();
@@ -451,14 +520,14 @@ $(document).ready(function() {
 		$(".sidebar-nav .boxes, .sidebar-nav .rows").hide();
 		$(this).next().slideDown()
 	});
-	
 
-	$('#undo').click(function(){
+
+	$('#undo').click(function() {
 		stopsave++;
 		if (undoLayout()) initContainer();
 		stopsave--;
 	});
-	$('#redo').click(function(){
+	$('#redo').click(function() {
 		stopsave++;
 		if (redoLayout()) initContainer();
 		stopsave--;
@@ -469,3 +538,26 @@ $(document).ready(function() {
 		handleSaveLayout()
 	}, timerSave)
 })
+
+
+function nav() {
+	var data = window.data;
+	var mainNav = [];
+
+	var navList = ['layout', 'widget'];
+	for (var i = 0; i < navList.length; i++) {
+		var item = data[navList[i]];
+		for (var j = 0; j < data[navList[i]].length; j++) {
+			for(var key in item[j]){
+				
+				mainNav.push({name:item[j]['name'],id:item[j]['id']});
+			}
+		}
+	}
+	
+console.log(mainNav);
+	var t = tmpl('navTpl',{list:mainNav});
+	console.log(t);
+}
+
+nav();
